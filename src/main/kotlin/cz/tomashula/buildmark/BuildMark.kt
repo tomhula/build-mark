@@ -6,47 +6,49 @@ import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.register
-import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 class BuildMark : Plugin<Project>
 {
     override fun apply(project: Project)
     {
         val outputDirectory = project.layout.buildDirectory.dir(OUTPUT_DIR)
-        
+
         val extension = project.extensions.create<BuildMarkExtension>("buildMark")
-
-        addBuildMarkToSourceSets(project, outputDirectory)
-
+        
         extension.targetPackage.convention("")
         extension.targetObjectName.convention("BuildMark")
+        project.kotlinExtension.sourceSets.firstOrNull()?.let { firstKotlinSourceSet ->
+            extension.kotlinSourceSets.convention(listOf(firstKotlinSourceSet))
+        }
         extension.options.convention(mapOf("VERSION" to project.version.toString()))
 
+        addBuildMarkToSourceSets(extension.kotlinSourceSets.get(), outputDirectory)
+        
         val generateTask = project.tasks.register<GenerateBuildMarkTask>("generateBuildMark") {
             group = "build"
             description = "Generates the build mark object"
             outputDir.set(outputDirectory)
         }
-        
 
-        project.tasks.named("compileKotlin").configure {
+        project.tasks.withType<KotlinCompile> {
             dependsOn(generateTask)
         }
-        
+
         project.afterEvaluate {
             generateTask.get().generate()
         }
     }
 
     private fun addBuildMarkToSourceSets(
-        project: Project,
+        sourceSets: List<KotlinSourceSet>,
         outputDirectory: Provider<Directory>
     )
     {
-        project.plugins.withId("org.jetbrains.kotlin.jvm") {
-            val kotlin = project.extensions.getByName("kotlin") as KotlinProjectExtension
-            kotlin.sourceSets.getByName("main").kotlin.srcDir(outputDirectory)
-        }
+        sourceSets.forEach { it.kotlin.srcDir(outputDirectory) }
     }
 
     companion object
