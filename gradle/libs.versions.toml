@@ -1,0 +1,7 @@
+[versions]
+kotlinpoet = "2.1.0"
+kotlin-gradle-plugin = "2.1.20"
+
+[libraries]
+kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-gradle-plugin" }
