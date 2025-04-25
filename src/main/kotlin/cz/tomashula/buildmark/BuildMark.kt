@@ -18,14 +18,8 @@ class BuildMark : Plugin<Project>
         val outputDirectory = project.layout.buildDirectory.dir(OUTPUT_DIR)
 
         val extension = project.extensions.create<BuildMarkExtension>("buildMark")
-        
-        extension.targetPackage.convention("")
-        extension.targetObjectName.convention("BuildMark")
-        project.kotlinExtension.sourceSets.firstOrNull()?.let { firstKotlinSourceSet ->
-            extension.kotlinSourceSets.convention(listOf(firstKotlinSourceSet))
-        }
-        extension.options.convention(mapOf("VERSION" to project.version.toString()))
 
+        configureExtensionConventions(extension, project)
         addBuildMarkToSourceSets(extension.kotlinSourceSets.get(), outputDirectory)
         
         val generateTask = project.tasks.register<GenerateBuildMarkTask>("generateBuildMark") {
@@ -41,6 +35,16 @@ class BuildMark : Plugin<Project>
         project.afterEvaluate {
             generateTask.get().generate()
         }
+    }
+
+    private fun configureExtensionConventions(extension: BuildMarkExtension, project: Project)
+    {
+        extension.targetPackage.convention("")
+        extension.targetObjectName.convention("BuildMark")
+        project.kotlinExtension.sourceSets.firstOrNull()?.let { firstKotlinSourceSet ->
+            extension.kotlinSourceSets.convention(listOf(firstKotlinSourceSet))
+        }
+        extension.options.convention(mapOf("VERSION" to project.version.toString()))
     }
 
     private fun addBuildMarkToSourceSets(
