@@ -9,9 +9,9 @@ import kotlin.reflect.KClass
  */
 class KotlinLiteralValueConverter
 {
-    private val convertors = mutableMapOf<KClass<*>, (Any) -> String>()
+    private val convertors = mutableMapOf<KClass<*>, (Any) -> CodeBlock>()
     
-    private fun registerConvertor(clazz: KClass<*>, convertor: (Any) -> String) = convertors.put(clazz, convertor)
+    private fun registerConvertor(clazz: KClass<*>, convertor: (Any) -> CodeBlock) = convertors.put(clazz, convertor)
     
     private fun registerDirectLiteralConverters()
     {
@@ -22,7 +22,7 @@ class KotlinLiteralValueConverter
             Byte::class,
             Double::class,
             Boolean::class
-        ).forEach { literalType -> registerConvertor(literalType) { CodeBlock.of("%L", it).toString() } }
+        ).forEach { literalType -> registerConvertor(literalType) { CodeBlock.of("%L", it) } }
     }
     
     private fun registerUnsignedConverters()
@@ -32,7 +32,7 @@ class KotlinLiteralValueConverter
             UShort::class,
             ULong::class,
             UByte::class
-        ).forEach { uType -> registerConvertor(uType) { CodeBlock.of("%Lu", it).toString() } }
+        ).forEach { uType -> registerConvertor(uType) { CodeBlock.of("%Lu", it) } }
     }
 
     /**
@@ -51,19 +51,19 @@ class KotlinLiteralValueConverter
         return if (value == null) 
             "null"
         else
-            convertors[value::class]?.invoke(value) ?: throw IllegalArgumentException("Unsupported type: ${value::class}")
+            convertors[value::class]?.invoke(value)?.toString() ?: throw IllegalArgumentException("Unsupported type: ${value::class}")
     }
     
     init
     {
         registerDirectLiteralConverters()
         registerUnsignedConverters()
-        registerConvertor(String::class) { CodeBlock.of("%S", it).toString() }
-        registerConvertor(Char::class) { CodeBlock.of("'%L'", it).toString() }
-        registerConvertor(Float::class) { CodeBlock.of("%Lf", it).toString() }
+        registerConvertor(String::class) { CodeBlock.of("%S", it) }
+        registerConvertor(Char::class) { CodeBlock.of("'%L'", it) }
+        registerConvertor(Float::class) { CodeBlock.of("%Lf", it) }
         registerConvertor(ArrayList::class) { list ->
             val elements = (list as List<*>).map { convert(it) }
-            CodeBlock.of("listOf(%L)", elements.joinToString(", ")).toString()
+            CodeBlock.of("listOf(%L)", elements.joinToString(", "))
         }
     }
 }
