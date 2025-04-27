@@ -23,4 +23,13 @@ repositories {
 dependencies {
     implementation(libs.kotlinpoet)
     compileOnly(libs.kotlin.gradle.plugin)
+    
+    testImplementation(kotlin("test"))
+    testImplementation("org.jetbrains.kotlin:kotlin-scripting-common")
+    testImplementation("org.jetbrains.kotlin:kotlin-scripting-jvm")
+    testImplementation("org.jetbrains.kotlin:kotlin-scripting-jvm-host")
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
