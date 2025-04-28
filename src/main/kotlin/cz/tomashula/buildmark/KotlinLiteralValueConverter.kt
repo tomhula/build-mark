@@ -15,14 +15,14 @@ class KotlinLiteralValueConverter
     
     private fun registerDirectLiteralConverters()
     {
-        listOf<KClass<*>>(
+        setOf<KClass<*>>(
             Int::class,
             Double::class,
             Boolean::class
         ).forEach { literalType -> registerConvertor(literalType) { CodeBlock.of("%L", it) } }
         
         // Cast to Int and use Int's converter
-        listOf<KClass<*>>(
+        setOf<KClass<*>>(
             Byte::class,
             Short::class
         ).forEach { type -> registerConvertor(type) { CodeBlock.of(convert((it as Number).toInt())) } }
@@ -30,7 +30,7 @@ class KotlinLiteralValueConverter
     
     private fun registerUnsignedConverters()
     {
-        listOf<KClass<*>>(
+        setOf<KClass<*>>(
             UInt::class,
             UShort::class,
             ULong::class,
