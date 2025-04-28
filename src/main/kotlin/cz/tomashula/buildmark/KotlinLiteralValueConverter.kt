@@ -67,5 +67,55 @@ class KotlinLiteralValueConverter
             val elements = (list as List<*>).map { convert(it) }
             CodeBlock.of("listOf(%L)", elements.joinToString(", "))
         }
+        registerConvertor(Set::class) { set ->
+            val elements = (set as Set<*>).map { convert(it) }
+            CodeBlock.of("setOf(%L)", elements.joinToString(", "))
+        }
+        registerConvertor(Map::class) { map ->
+            val entries = (map as Map<*, *>).entries.map { "${convert(it.key)} to ${convert(it.value)}" }
+            CodeBlock.of("mapOf(%L)", entries.joinToString(", "))
+        }
+        registerConvertor(Pair::class) { pair ->
+            val (first, second) = pair as Pair<*, *>
+            CodeBlock.of("%L to %L", convert(first), convert(second))
+        }
+        registerConvertor(Array::class) { array ->
+            val elements = (array as Array<*>).map { convert(it) }
+            CodeBlock.of("arrayOf(%L)", elements.joinToString(", "))
+        }
+
+        // Primitive array converters
+        registerConvertor(IntArray::class) { array ->
+            val elements = (array as IntArray).joinToString(", ", transform = ::convert)
+            CodeBlock.of("intArrayOf(%L)", elements)
+        }
+        registerConvertor(ByteArray::class) { array ->
+            val elements = (array as ByteArray).joinToString(", ", transform = ::convert)
+            CodeBlock.of("byteArrayOf(%L)", elements)
+        }
+        registerConvertor(ShortArray::class) { array ->
+            val elements = (array as ShortArray).joinToString(", ", transform = ::convert)
+            CodeBlock.of("shortArrayOf(%L)", elements)
+        }
+        registerConvertor(LongArray::class) { array ->
+            val elements = (array as LongArray).joinToString(", ", transform = ::convert)
+            CodeBlock.of("longArrayOf(%L)", elements)
+        }
+        registerConvertor(FloatArray::class) { array ->
+            val elements = (array as FloatArray).joinToString(", ", transform = ::convert)
+            CodeBlock.of("floatArrayOf(%L)", elements)
+        }
+        registerConvertor(DoubleArray::class) { array ->
+            val elements = (array as DoubleArray).joinToString(", ", transform = ::convert)
+            CodeBlock.of("doubleArrayOf(%L)", elements)
+        }
+        registerConvertor(BooleanArray::class) { array ->
+            val elements = (array as BooleanArray).joinToString(", ", transform = ::convert)
+            CodeBlock.of("booleanArrayOf(%L)", elements)
+        }
+        registerConvertor(CharArray::class) { array ->
+            val elements = (array as CharArray).joinToString(", ") { "'$it'" }
+            CodeBlock.of("charArrayOf(%L)", elements)
+        }
     }
 }

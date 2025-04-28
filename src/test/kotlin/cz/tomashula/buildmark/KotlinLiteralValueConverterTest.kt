@@ -10,6 +10,7 @@ import kotlin.script.experimental.api.ScriptEvaluationConfiguration
 import kotlin.script.experimental.api.valueOrThrow
 import kotlin.script.experimental.host.toScriptSource
 import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
@@ -100,6 +101,110 @@ class KotlinLiteralValueConverterTest
         
         val mixedList = listOf(1, "Hello", 2.5f, true)
         assertValueEqualsEvaluated(mixedList)
+    }
+
+    @Test
+    fun testSet()
+    {
+        val randomSet = (1..Random.nextInt(5, 10)).map { Random.nextInt() }.toSet()
+        assertValueEqualsEvaluated(randomSet)
+
+        val mixedSet = setOf(1, "Hello", 2.5f, true)
+        assertValueEqualsEvaluated(mixedSet)
+    }
+
+    @Test
+    fun testMap()
+    {
+        val randomMap = (1..Random.nextInt(5, 10)).associate { it to Random.nextInt() }
+        assertValueEqualsEvaluated(randomMap)
+
+        val mixedMap = mapOf(1 to "One", "Two" to 2, 3.5f to true)
+        assertValueEqualsEvaluated(mixedMap)
+    }
+
+    @Test
+    fun testPair()
+    {
+        val randomPair = Random.nextInt() to Random.nextDouble()
+        assertValueEqualsEvaluated(randomPair)
+
+        val mixedPair = "Hello" to 42
+        assertValueEqualsEvaluated(mixedPair)
+    }
+
+    @Test
+    fun testArray()
+    {
+        val randomArray = Array(Random.nextInt(5, 10)) { Random.nextInt() }
+        assertValueEqualsEvaluated(randomArray)
+
+        val mixedArray = arrayOf(1, "Hello", 2.5f, true)
+        assertValueEqualsEvaluated(mixedArray)
+    }
+
+    @Test
+    fun testIntArray()
+    {
+        val randomIntArray = IntArray(Random.nextInt(5, 10)) { Random.nextInt() }
+        val randomIntArrayEvaluated = evaluateValue(randomIntArray)
+        assertContentEquals(randomIntArray, randomIntArrayEvaluated as IntArray)
+    }
+
+    @Test
+    fun testByteArray()
+    {
+        val randomByteArray = ByteArray(Random.nextInt(5, 10)) { Random.nextInt().toByte() }
+        val randomByteArrayEvaluated = evaluateValue(randomByteArray)
+        assertContentEquals(randomByteArray, randomByteArrayEvaluated as ByteArray)
+    }
+
+    @Test
+    fun testShortArray()
+    {
+        val randomShortArray = ShortArray(Random.nextInt(5, 10)) { Random.nextInt().toShort() }
+        val randomShortArrayEvaluated = evaluateValue(randomShortArray)
+        assertContentEquals(randomShortArray, randomShortArrayEvaluated as ShortArray)
+    }
+
+    @Test
+    fun testLongArray()
+    {
+        val randomLongArray = LongArray(Random.nextInt(5, 10)) { Random.nextLong() }
+        val randomLongArrayEvaluated = evaluateValue(randomLongArray)
+        assertContentEquals(randomLongArray, randomLongArrayEvaluated as LongArray)
+    }
+
+    @Test
+    fun testFloatArray()
+    {
+        val randomFloatArray = FloatArray(Random.nextInt(5, 10)) { Random.nextFloat() }
+        val randomFloatArrayEvaluated = evaluateValue(randomFloatArray)
+        assertContentEquals(randomFloatArray, randomFloatArrayEvaluated as FloatArray)
+    }
+
+    @Test
+    fun testDoubleArray()
+    {
+        val randomDoubleArray = DoubleArray(Random.nextInt(5, 10)) { Random.nextDouble() }
+        val randomDoubleArrayEvaluated = evaluateValue(randomDoubleArray)
+        assertContentEquals(randomDoubleArray, randomDoubleArrayEvaluated as DoubleArray)
+    }
+
+    @Test
+    fun testBooleanArray()
+    {
+        val randomBooleanArray = BooleanArray(Random.nextInt(5, 10)) { Random.nextBoolean() }
+        val randomBooleanArrayEvaluated = evaluateValue(randomBooleanArray)
+        assertContentEquals(randomBooleanArray, randomBooleanArrayEvaluated as BooleanArray)
+    }
+
+    @Test
+    fun testCharArray()
+    {
+        val randomCharArray = CharArray(Random.nextInt(5, 10)) { Random.nextInt().toChar() }
+        val randomCharArrayEvaluated = evaluateValue(randomCharArray)
+        assertContentEquals(randomCharArray, randomCharArrayEvaluated as CharArray)
     }
 
     @Test
