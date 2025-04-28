@@ -41,6 +41,31 @@ class KotlinLiteralValueConverter
     
     init
     {
+        registerNumberConverters()
+        registerCollectionConverters()
+        registerArrayConverters()
+
+        registerConvertor(String::class) { CodeBlock.of("%S", it) }
+        registerConvertor(Char::class) { CodeBlock.of("'%L'", it) }
+        registerConvertor(Pair::class) { CodeBlock.of("%L to %L", convert(it.first), convert(it.second)) }
+    }
+
+    private fun registerCollectionConverters()
+    {
+        registerConvertor(List::class) { list ->
+            CodeBlock.of("listOf(%L)", list.toConvertedArgumentList())
+        }
+        registerConvertor(Set::class) { set ->
+            CodeBlock.of("setOf(%L)", set.toConvertedArgumentList())
+        }
+        registerConvertor(Map::class) { map ->
+            val entries = map.entries.map { "${convert(it.key)} to ${convert(it.value)}" }
+            CodeBlock.of("mapOf(%L)", entries.joinToString(", "))
+        }
+    }
+
+    private fun registerNumberConverters()
+    {
         setOf<KClass<*>>(
             Int::class,
             Double::class,
@@ -59,25 +84,13 @@ class KotlinLiteralValueConverter
             ULong::class,
             UByte::class
         ).forEach<KClass<*>> { uType -> registerConvertor(uType) { CodeBlock.of("%Lu", it) } }
-        
-        registerConvertor(String::class) { CodeBlock.of("%S", it) }
-        registerConvertor(Char::class) { CodeBlock.of("'%L'", it) }
+
         registerConvertor(Float::class) { CodeBlock.of("%Lf", it) }
         registerConvertor(Long::class) { CodeBlock.of("%LL", it) }
-        registerConvertor(List::class) { list ->
-            CodeBlock.of("listOf(%L)", list.toConvertedArgumentList())
-        }
-        registerConvertor(Set::class) { set ->
-            CodeBlock.of("setOf(%L)", set.toConvertedArgumentList())
-        }
-        registerConvertor(Map::class) { map ->
-            val entries = map.entries.map { "${convert(it.key)} to ${convert(it.value)}" }
-            CodeBlock.of("mapOf(%L)", entries.joinToString(", "))
-        }
-        registerConvertor(Pair::class) { pair ->
-            val (first, second) = pair
-            CodeBlock.of("%L to %L", convert(first), convert(second))
-        }
+    }
+
+    private fun registerArrayConverters()
+    {
         registerConvertor(Array::class) { array ->
             val elements = array.map { convert(it) }
             CodeBlock.of("arrayOf(%L)", elements.joinToString(", "))
