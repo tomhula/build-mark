@@ -2,6 +2,7 @@ package cz.tomashula.buildmark
 
 import com.squareup.kotlinpoet.CodeBlock
 import kotlin.collections.joinToString
+import kotlin.collections.map
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
@@ -11,9 +12,19 @@ import kotlin.reflect.full.isSubclassOf
  */
 class KotlinLiteralValueConverter
 {
-    private val convertors = mutableMapOf<KClass<*>, (Any) -> CodeBlock>()
+    private val convertors = mutableMapOf<(KClass<*>) -> Boolean, (Any) -> CodeBlock>()
     
-    private fun <T : Any> registerConvertor(clazz: KClass<T>, convertor: (T) -> CodeBlock) = convertors.put(clazz, convertor as (Any) -> CodeBlock)
+    private fun <T : Any> registerConvertor(predicate: (KClass<T>) -> Boolean, convertor: (T) -> CodeBlock) = 
+        convertors.put(
+            predicate as (KClass<*>) -> Boolean, 
+            convertor as (Any) -> CodeBlock
+        )
+    
+    private fun <T : Any> registerConvertor(clazz: KClass<T>, convertor: (T) -> CodeBlock) = 
+        registerConvertor(
+            predicate = { it.isSubclassOf(clazz) },
+            convertor = convertor as (Any) -> CodeBlock
+        )
 
     /**
      * Converts [value] of supported type to a Kotlin code that evaluates back to that value.
@@ -33,9 +44,9 @@ class KotlinLiteralValueConverter
 
         val type = value::class
 
-        val converterForTypeOrSupertype = convertors.entries.find { type.isSubclassOf(it.key) }?.value
+        val converter = convertors.entries.find { it.key(type) }?.value
         
-        return converterForTypeOrSupertype?.invoke(value)?.toString() 
+        return converter?.invoke(value)?.toString() 
             ?: throw IllegalArgumentException("Unsupported type: ${value::class}")
     }
     
@@ -91,7 +102,7 @@ class KotlinLiteralValueConverter
 
     private fun registerArrayConverters()
     {
-        registerConvertor(Array::class) { array ->
+        registerConvertor<Array<*>>({ it.qualifiedName == "kotlin.Array" || it.java == Array::class.java }) { array ->
             val elements = array.map { convert(it) }
             CodeBlock.of("arrayOf(%L)", elements.joinToString(", "))
         }
