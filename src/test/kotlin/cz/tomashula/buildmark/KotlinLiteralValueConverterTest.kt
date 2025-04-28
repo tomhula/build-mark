@@ -31,7 +31,7 @@ class KotlinLiteralValueConverterTest
     {
         assertValueEqualsEvaluated(null)
     }
-    
+
     @Test
     fun testInt()
     {
@@ -98,7 +98,7 @@ class KotlinLiteralValueConverterTest
     {
         val randomList = List(Random.nextInt(10, 20)) { Random.nextInt() }
         assertValueEqualsEvaluated(randomList)
-        
+
         val mixedList = listOf(1, "Hello", 2.5f, true)
         assertValueEqualsEvaluated(mixedList)
     }
@@ -212,7 +212,10 @@ class KotlinLiteralValueConverterTest
     @Test
     fun testUnsupportedType()
     {
-        assertFailsWith<IllegalArgumentException> { assertValueEqualsEvaluated(object {}) }
+        assertFailsWith<IllegalArgumentException> {
+            assertValueEqualsEvaluated(object
+            {})
+        }
     }
 
     private fun assertValueEqualsEvaluated(value: Any?)
@@ -220,20 +223,20 @@ class KotlinLiteralValueConverterTest
         val valueEvaluatedFromCode = evaluateValue(value)
         assertEquals(value, valueEvaluatedFromCode)
     }
-    
+
     private fun evaluateValue(value: Any?): Any?
     {
         val valueCode = generateCodeEvaluatingToValue(value)
         return eval(valueCode)
     }
-    
+
     private fun generateCodeEvaluatingToValue(value: Any?): String
     {
         val valueLiteral = converter.convert(value)
         val valueLiteralEvaluationCode = if (value != null)
             valueLiteral
         else
-            // BUG: `null` evaluates to Unit for some reason. However a nullable variable correctly evaluates to null. 
+        // BUG: `null` evaluates to Unit for some reason. However a nullable variable correctly evaluates to null. 
             CodeBlock.builder()
                 .addStatement("val value: Any? = null")
                 .addStatement("value")

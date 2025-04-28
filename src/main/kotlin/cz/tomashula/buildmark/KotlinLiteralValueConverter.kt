@@ -13,14 +13,14 @@ import kotlin.reflect.full.isSubclassOf
 class KotlinLiteralValueConverter
 {
     private val convertors = mutableMapOf<(KClass<*>) -> Boolean, (Any) -> CodeBlock>()
-    
-    private fun <T : Any> registerConvertor(predicate: (KClass<T>) -> Boolean, convertor: (T) -> CodeBlock) = 
+
+    private fun <T : Any> registerConvertor(predicate: (KClass<T>) -> Boolean, convertor: (T) -> CodeBlock) =
         convertors.put(
-            predicate as (KClass<*>) -> Boolean, 
+            predicate as (KClass<*>) -> Boolean,
             convertor as (Any) -> CodeBlock
         )
-    
-    private fun <T : Any> registerConvertor(clazz: KClass<T>, convertor: (T) -> CodeBlock) = 
+
+    private fun <T : Any> registerConvertor(clazz: KClass<T>, convertor: (T) -> CodeBlock) =
         registerConvertor(
             predicate = { it.isSubclassOf(clazz) },
             convertor = convertor as (Any) -> CodeBlock
@@ -45,11 +45,11 @@ class KotlinLiteralValueConverter
         val type = value::class
 
         val converter = convertors.entries.find { it.key(type) }?.value
-        
-        return converter?.invoke(value)?.toString() 
+
+        return converter?.invoke(value)?.toString()
             ?: throw IllegalArgumentException("Unsupported type: ${value::class}")
     }
-    
+
     init
     {
         registerNumberConverters()

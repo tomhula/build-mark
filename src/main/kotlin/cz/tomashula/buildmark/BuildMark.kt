@@ -21,7 +21,7 @@ class BuildMark : Plugin<Project>
 
         configureExtensionConventions(extension, project)
         addBuildMarkToSourceSets(extension.kotlinSourceSets.get(), outputDirectory)
-        
+
         val generateTask = project.tasks.register<GenerateBuildMarkTask>("generateBuildMark") {
             group = "build"
             description = "Generates the build mark object"
