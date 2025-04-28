@@ -137,10 +137,12 @@ class KotlinLiteralValueConverterTest
     fun testArray()
     {
         val randomArray = Array(Random.nextInt(5, 10)) { Random.nextInt() }
-        assertValueEqualsEvaluated(randomArray)
+        val randomArrayEvaluated = evaluateValue(randomArray)
+        assertContentEquals(randomArray, randomArrayEvaluated as Array<Int>)
 
-        val mixedArray = arrayOf(1, "Hello", 2.5f, true)
-        assertValueEqualsEvaluated(mixedArray)
+        val mixedArray: Array<Any?> = arrayOf(1, "Hello", 2.5f, true, null)
+        val mixedArrayEvaluated = evaluateValue(mixedArray)
+        assertContentEquals(mixedArray, mixedArrayEvaluated as Array<Any?>)
     }
 
     @Test
