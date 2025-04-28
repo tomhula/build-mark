@@ -71,7 +71,7 @@ class KotlinLiteralValueConverter
         registerConvertor(Char::class) { CodeBlock.of("'%L'", it) }
         registerConvertor(Float::class) { CodeBlock.of("%Lf", it) }
         registerConvertor(Long::class) { CodeBlock.of("%LL", it) }
-        registerConvertor(ArrayList::class) { list ->
+        registerConvertor(List::class) { list ->
             val elements = (list as List<*>).map { convert(it) }
             CodeBlock.of("listOf(%L)", elements.joinToString(", "))
         }
