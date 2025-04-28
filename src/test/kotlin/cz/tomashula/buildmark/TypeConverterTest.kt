@@ -12,6 +12,7 @@ import kotlin.script.experimental.host.toScriptSource
 import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 
 class TypeConverterTest
@@ -112,15 +113,9 @@ class TypeConverterTest
     private fun generateCodeEvaluatingToValue(value: Any?): String
     {
         val valueLiteral = converter.convert(value)
-        val valueLiteralEvaluationCode = CodeBlock.builder().apply {
-            if (value != null)
-                addStatement("val value: %T = %L", value::class, valueLiteral)
-            else
-                addStatement("val value: %T? = %L", Any::class, null)
-            addStatement("value")
-        }.build()
+        val valueLiteralEvaluationCode = valueLiteral
 
-        return valueLiteralEvaluationCode.toString()
+        return valueLiteralEvaluationCode
     }
 
     private fun eval(kotlinCode: String): Any?
