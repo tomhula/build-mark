@@ -97,6 +97,9 @@ class TypeConverterTest
     {
         val randomList = List(Random.nextInt(10, 20)) { Random.nextInt() }
         assertValueEqualsEvaluated(randomList)
+        
+        val mixedList = listOf(1, "Hello", 2.5f, true)
+        assertValueEqualsEvaluated(mixedList)
     }
 
     @Test
