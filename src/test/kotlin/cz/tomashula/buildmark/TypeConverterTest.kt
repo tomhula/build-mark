@@ -12,7 +12,6 @@ import kotlin.script.experimental.host.toScriptSource
 import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
 
 
 class TypeConverterTest
@@ -29,91 +28,106 @@ class TypeConverterTest
     @Test
     fun testNull()
     {
-        testValue(null)
+        assertValueEqualsEvaluated(null)
     }
     
     @Test
     fun testInt()
     {
-        testValue(Random.nextInt())
+        assertValueEqualsEvaluated(Random.nextInt())
     }
 
     @Test
     fun testByte()
     {
-        testValue(Random.nextInt().toByte())
+        val randomByte = Random.nextInt().toByte()
+        val evaluated = evaluateValue(randomByte)
+        assertEquals(randomByte.toInt(), evaluated)
     }
 
     @Test
     fun testShort()
     {
-        testValue(Random.nextInt().toShort())
+        val randomShort = Random.nextInt().toShort()
+        val evaluated = evaluateValue(randomShort)
+        assertEquals(randomShort.toInt(), evaluated)
     }
 
     @Test
     fun testLong()
     {
-        testValue(Random.nextLong())
+        assertValueEqualsEvaluated(Random.nextLong())
     }
 
     @Test
     fun testDouble()
     {
-        testValue(Random.nextDouble())
+        assertValueEqualsEvaluated(Random.nextDouble())
     }
 
     @Test
     fun testBoolean()
     {
-        testValue(Random.nextBoolean())
+        assertValueEqualsEvaluated(Random.nextBoolean())
     }
 
     @Test
     fun testString()
     {
         val randomString = String(Random.nextBytes(20), Charset.forName("UTF-8"))
-        testValue(randomString)
+        assertValueEqualsEvaluated(randomString)
     }
 
     @Test
     fun testChar()
     {
         val randomChar = Random.nextInt().toChar()
-        testValue(randomChar)
+        assertValueEqualsEvaluated(randomChar)
     }
 
     @Test
     fun testFloat()
     {
         val randomFloat = Random.nextFloat()
-        testValue(randomFloat)
+        assertValueEqualsEvaluated(randomFloat)
     }
 
     @Test
     fun testList()
     {
         val randomList = List(Random.nextInt(10, 20)) { Random.nextInt() }
-        testValue(randomList)
+        assertValueEqualsEvaluated(randomList)
     }
 
     @Test
     fun testUnsupportedType()
     {
-        assertFailsWith<IllegalArgumentException> { testValue(object {}) }
+        assertFailsWith<IllegalArgumentException> { assertValueEqualsEvaluated(object {}) }
     }
 
-    private fun testValue(value: Any?)
+    private fun assertValueEqualsEvaluated(value: Any?)
+    {
+        val valueEvaluatedFromCode = evaluateValue(value)
+        assertEquals(value, valueEvaluatedFromCode)
+    }
+    
+    private fun evaluateValue(value: Any?): Any?
     {
         val valueCode = generateCodeEvaluatingToValue(value)
-        println("Generated test code block: \n$valueCode")
-        val valueEvaluatedFromCode = eval(valueCode)
-        assertEquals(value, valueEvaluatedFromCode, "Generated test code block: \n$valueCode")
+        return eval(valueCode)
     }
     
     private fun generateCodeEvaluatingToValue(value: Any?): String
     {
         val valueLiteral = converter.convert(value)
-        val valueLiteralEvaluationCode = valueLiteral
+        val valueLiteralEvaluationCode = if (value != null)
+            valueLiteral
+        else
+            // BUG: `null` evaluates to Unit for some reason. However a nullable variable correctly evaluates to null. 
+            CodeBlock.builder()
+                .addStatement("val value: Any? = null")
+                .addStatement("value")
+                .build().toString()
 
         return valueLiteralEvaluationCode
     }
