@@ -66,24 +66,24 @@ class KotlinLiteralValueConverter
 
     private fun registerNumberConverters()
     {
-        setOf<KClass<*>>(
+        setOf(
             Int::class,
             Double::class,
             Boolean::class
         ).forEach { literalType -> registerConvertor(literalType) { CodeBlock.of("%L", it) } }
 
         // Cast to Int and use Int's converter
-        setOf<KClass<*>>(
+        setOf(
             Byte::class,
             Short::class
         ).forEach { type -> registerConvertor(type) { CodeBlock.of(convert((it as Number).toInt())) } }
 
-        setOf<KClass<*>>(
+        setOf(
             UInt::class,
             UShort::class,
             ULong::class,
             UByte::class
-        ).forEach<KClass<*>> { uType -> registerConvertor(uType) { CodeBlock.of("%Lu", it) } }
+        ).forEach { uType -> registerConvertor(uType) { CodeBlock.of("%Lu", it) } }
 
         registerConvertor(Float::class) { CodeBlock.of("%Lf", it) }
         registerConvertor(Long::class) { CodeBlock.of("%LL", it) }
