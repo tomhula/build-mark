@@ -4,7 +4,7 @@ import com.squareup.kotlinpoet.CodeBlock
 import kotlin.reflect.KClass
 
 /**
- * Converts value of a supported type to a Kotlin code literal of that value.
+ * Converts a value of a supported type to a Kotlin code literal of that value.
  * @see convert
  */
 class KotlinLiteralValueConverter
