@@ -2,6 +2,7 @@ package cz.tomashula.buildmark
 
 import com.squareup.kotlinpoet.CodeBlock
 import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
 
 /**
  * Converts a value of a supported type to a Kotlin code literal of that value.
@@ -51,10 +52,15 @@ class KotlinLiteralValueConverter
      */
     fun convert(value: Any?): String
     {
-        return if (value == null) 
-            "null"
-        else
-            convertors[value::class]?.invoke(value)?.toString() ?: throw IllegalArgumentException("Unsupported type: ${value::class}")
+        if (value == null)
+            return "null"
+
+        val type = value::class
+
+        val converterForTypeOrSupertype = convertors.entries.find { type.isSubclassOf(it.key) }?.value
+        
+        return converterForTypeOrSupertype?.invoke(value)?.toString() 
+            ?: throw IllegalArgumentException("Unsupported type: ${value::class}")
     }
     
     init
