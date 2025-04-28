@@ -21,10 +21,10 @@ class KotlinLiteralValueConverter
             Boolean::class
         ).forEach { literalType -> registerConvertor(literalType) { CodeBlock.of("%L", it) } }
         
+        // Cast to Int and use Int's converter
         listOf<KClass<*>>(
             Byte::class,
-            Short::class,
-            Long::class
+            Short::class
         ).forEach { type -> registerConvertor(type) { CodeBlock.of(convert((it as Number).toInt())) } }
     }
     
@@ -64,6 +64,7 @@ class KotlinLiteralValueConverter
         registerConvertor(String::class) { CodeBlock.of("%S", it) }
         registerConvertor(Char::class) { CodeBlock.of("'%L'", it) }
         registerConvertor(Float::class) { CodeBlock.of("%Lf", it) }
+        registerConvertor(Long::class) { CodeBlock.of("%LL", it) }
         registerConvertor(ArrayList::class) { list ->
             val elements = (list as List<*>).map { convert(it) }
             CodeBlock.of("listOf(%L)", elements.joinToString(", "))
