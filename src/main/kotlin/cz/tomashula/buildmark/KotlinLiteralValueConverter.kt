@@ -1,6 +1,7 @@
 package cz.tomashula.buildmark
 
 import com.squareup.kotlinpoet.CodeBlock
+import kotlin.collections.joinToString
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
@@ -64,12 +65,10 @@ class KotlinLiteralValueConverter
         registerConvertor(Float::class) { CodeBlock.of("%Lf", it) }
         registerConvertor(Long::class) { CodeBlock.of("%LL", it) }
         registerConvertor(List::class) { list ->
-            val elements = list.map { convert(it) }
-            CodeBlock.of("listOf(%L)", elements.joinToString(", "))
+            CodeBlock.of("listOf(%L)", list.toConvertedArgumentList())
         }
         registerConvertor(Set::class) { set ->
-            val elements = set.map { convert(it) }
-            CodeBlock.of("setOf(%L)", elements.joinToString(", "))
+            CodeBlock.of("setOf(%L)", set.toConvertedArgumentList())
         }
         registerConvertor(Map::class) { map ->
             val entries = map.entries.map { "${convert(it.key)} to ${convert(it.value)}" }
@@ -118,4 +117,7 @@ class KotlinLiteralValueConverter
             CodeBlock.of("charArrayOf(%L)", elements)
         }
     }
+
+    /** Converts a collection of a comma seperated string of a result of [convert] on each element. */
+    private fun Iterable<*>.toConvertedArgumentList() = joinToString(", ", transform = ::convert)
 }
