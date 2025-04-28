@@ -13,31 +13,6 @@ class KotlinLiteralValueConverter
     private val convertors = mutableMapOf<KClass<*>, (Any) -> CodeBlock>()
     
     private fun registerConvertor(clazz: KClass<*>, convertor: (Any) -> CodeBlock) = convertors.put(clazz, convertor)
-    
-    private fun registerDirectLiteralConverters()
-    {
-        setOf<KClass<*>>(
-            Int::class,
-            Double::class,
-            Boolean::class
-        ).forEach { literalType -> registerConvertor(literalType) { CodeBlock.of("%L", it) } }
-        
-        // Cast to Int and use Int's converter
-        setOf<KClass<*>>(
-            Byte::class,
-            Short::class
-        ).forEach { type -> registerConvertor(type) { CodeBlock.of(convert((it as Number).toInt())) } }
-    }
-    
-    private fun registerUnsignedConverters()
-    {
-        setOf<KClass<*>>(
-            UInt::class,
-            UShort::class,
-            ULong::class,
-            UByte::class
-        ).forEach { uType -> registerConvertor(uType) { CodeBlock.of("%Lu", it) } }
-    }
 
     /**
      * Converts [value] of supported type to a Kotlin code that evaluates back to that value.
@@ -65,8 +40,25 @@ class KotlinLiteralValueConverter
     
     init
     {
-        registerDirectLiteralConverters()
-        registerUnsignedConverters()
+        setOf<KClass<*>>(
+            Int::class,
+            Double::class,
+            Boolean::class
+        ).forEach { literalType -> registerConvertor(literalType) { CodeBlock.of("%L", it) } }
+
+        // Cast to Int and use Int's converter
+        setOf<KClass<*>>(
+            Byte::class,
+            Short::class
+        ).forEach { type -> registerConvertor(type) { CodeBlock.of(convert((it as Number).toInt())) } }
+
+        setOf<KClass<*>>(
+            UInt::class,
+            UShort::class,
+            ULong::class,
+            UByte::class
+        ).forEach<KClass<*>> { uType -> registerConvertor(uType) { CodeBlock.of("%Lu", it) } }
+        
         registerConvertor(String::class) { CodeBlock.of("%S", it) }
         registerConvertor(Char::class) { CodeBlock.of("'%L'", it) }
         registerConvertor(Float::class) { CodeBlock.of("%Lf", it) }
