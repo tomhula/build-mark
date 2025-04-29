@@ -33,6 +33,7 @@ class BuildMark : Plugin<Project>
             this.outputDirectory.set(outputDirectory)
             targetObjectName.set(extension.targetObjectName)
             targetPackage.set(extension.targetPackage)
+            options.set(extension.options)
         }
 
         project.tasks.withType<KotlinCompile> {

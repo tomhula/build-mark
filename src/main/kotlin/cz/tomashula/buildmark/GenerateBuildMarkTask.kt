@@ -18,6 +18,8 @@ internal abstract class GenerateBuildMarkTask : DefaultTask()
     abstract val targetObjectName: Property<String>
     @get:Input
     abstract val targetPackage: Property<String>
+    @get:Input
+    abstract val options: MapProperty<String, Any>
 
     private val converter = KotlinLiteralValueConverter()
 
@@ -29,9 +31,7 @@ internal abstract class GenerateBuildMarkTask : DefaultTask()
         val outputDirectory = outputDirectory.get().asFile
         val targetObjectName = targetObjectName.get()
         val targetPackage = targetPackage.get()
-        /* TODO: Cannot be used as an input because it is not serializable. 
-            Potential fix is to serialize using external library to JSON for example. */
-        val options = project.extensions.getByType(BuildMarkExtension::class.java).options.get()
+        val options = options.get()
         
         val properties = options.map { option ->
             converter.convert(option.value).let { value -> "val ${option.key} = $value" }

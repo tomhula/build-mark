@@ -91,12 +91,14 @@ internal class KotlinLiteralValueConverter
             Short::class
         ).forEach { type -> registerConvertor(type) { CodeBlock.of(convert((it as Number).toInt())) } }
 
-        setOf(
+        // Unsigned types are not serializable by Gradle. Resulting in the following error if used: 
+        // "Cannot fingerprint input property 'options': value '{UINT=1000}' cannot be serialized."
+        /*setOf(
             UInt::class,
             UShort::class,
             ULong::class,
             UByte::class
-        ).forEach { uType -> registerConvertor(uType) { CodeBlock.of("%Lu", it) } }
+        ).forEach { uType -> registerConvertor(uType) { CodeBlock.of("%Lu", it) } }*/
 
         registerConvertor(Float::class) { CodeBlock.of("%Lf", it) }
         registerConvertor(Long::class) { CodeBlock.of("%LL", it) }
