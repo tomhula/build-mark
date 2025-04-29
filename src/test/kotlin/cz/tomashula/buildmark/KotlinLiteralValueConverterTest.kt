@@ -134,6 +134,7 @@ class KotlinLiteralValueConverterTest
     }
 
     @Test
+    @Suppress("UNCHECKED_CAST")
     fun testArray()
     {
         val randomArray = Array(Random.nextInt(5, 10)) { Random.nextInt() }
