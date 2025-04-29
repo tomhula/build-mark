@@ -25,9 +25,9 @@ dependencies {
     compileOnly(libs.kotlin.gradle.plugin)
     
     testImplementation(kotlin("test"))
-    testImplementation("org.jetbrains.kotlin:kotlin-scripting-common")
-    testImplementation("org.jetbrains.kotlin:kotlin-scripting-jvm")
-    testImplementation("org.jetbrains.kotlin:kotlin-scripting-jvm-host")
+    testImplementation(libs.kotlin.scripting.common)
+    testImplementation(libs.kotlin.scripting.jvm)
+    testImplementation(libs.kotlin.scripting.jvm.host)
 }
 
 tasks.test {
