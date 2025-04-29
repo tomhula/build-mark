@@ -8,7 +8,7 @@ A Gradle plugin that generates a Kotlin object with build information at compile
 
 ## Installation
 
-Add the plugin to your build script: ![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/cz.tomashula.buildmark)
+Add the plugin to your build script: ![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/cz.tomashula.buildmark?label=version)
 ```kotlin
 plugins {
     id("cz.tomashula.buildmark") version "<VERSION>"
