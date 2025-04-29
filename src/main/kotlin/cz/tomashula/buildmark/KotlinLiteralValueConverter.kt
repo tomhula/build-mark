@@ -10,7 +10,7 @@ import kotlin.reflect.full.isSubclassOf
  * Converts a value of a supported type to a Kotlin code literal of that value.
  * @see convert
  */
-class KotlinLiteralValueConverter
+internal class KotlinLiteralValueConverter
 {
     private val convertors = mutableMapOf<(KClass<*>) -> Boolean, (Any) -> CodeBlock>()
 
