@@ -14,12 +14,14 @@ internal class KotlinLiteralValueConverter
 {
     private val convertors = mutableMapOf<(KClass<*>) -> Boolean, (Any) -> CodeBlock>()
 
+    @Suppress("UNCHECKED_CAST")
     private fun <T : Any> registerConvertor(predicate: (KClass<T>) -> Boolean, convertor: (T) -> CodeBlock) =
         convertors.put(
             predicate as (KClass<*>) -> Boolean,
             convertor as (Any) -> CodeBlock
         )
 
+    @Suppress("UNCHECKED_CAST")
     private fun <T : Any> registerConvertor(clazz: KClass<T>, convertor: (T) -> CodeBlock) =
         registerConvertor(
             predicate = { it.isSubclassOf(clazz) },
