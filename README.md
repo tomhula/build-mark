@@ -56,6 +56,14 @@ fun main()
 }
 ```
 
+## Advantages over alternatives
+
+An alternative way to pass information to the runtime using Gradle is with command line arguments.
+However, this only works when running from Gradle.
+
+Another advantage is Kotlin multiplatform projects.
+If you apply this plugin on the shared module in the common source-set, you get access to the same information all modules, which might, for example, be a JVM backend and a JavaScript frontend.
+
 ## Contributing
 
 Contributions are welcome! Feel free to submit issues or Pull Requests.
