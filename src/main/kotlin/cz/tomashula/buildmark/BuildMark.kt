@@ -4,6 +4,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
+import org.gradle.internal.impldep.org.apache.http.client.methods.RequestBuilder.options
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
@@ -25,7 +26,9 @@ class BuildMark : Plugin<Project>
         val generateTask = project.tasks.register<GenerateBuildMarkTask>("generateBuildMark") {
             group = "build"
             description = "Generates the build mark object"
-            outputDir.set(outputDirectory)
+            this.outputDirectory.set(outputDirectory)
+            targetObjectName.set(extension.targetObjectName)
+            targetPackage.set(extension.targetPackage)
         }
 
         project.tasks.withType<KotlinCompile> {

@@ -2,28 +2,38 @@ package cz.tomashula.buildmark
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.MapProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import org.gradle.internal.impldep.org.apache.http.client.methods.RequestBuilder.options
 
 internal abstract class GenerateBuildMarkTask : DefaultTask()
 {
     @get:OutputDirectory
-    abstract val outputDir: DirectoryProperty
+    abstract val outputDirectory: DirectoryProperty
+    @get:Input
+    abstract val targetObjectName: Property<String>
+    @get:Input
+    abstract val targetPackage: Property<String>
 
     private val converter = KotlinLiteralValueConverter()
 
     @TaskAction
     fun generate()
     {
-        val buildMarkExt = project.extensions.getByType(BuildMarkExtension::class.java)
-        
-        val outputDirectory = outputDir.get().asFile
-        val targetObjectName = buildMarkExt.targetObjectName.get()
-        val targetPackage = buildMarkExt.targetPackage.get()
-
         // KotlinPoet is not used because it currently does not support type inference
+
+        val outputDirectory = outputDirectory.get().asFile
+        val targetObjectName = targetObjectName.get()
+        val targetPackage = targetPackage.get()
+        /* TODO: Cannot be used as an input because it is not serializable. 
+            Potential fix is to serialize using external library to JSON for example. */
+        val options = project.extensions.getByType(BuildMarkExtension::class.java).options.get()
         
-        val properties = buildMarkExt.options.get().map { option ->
+        val properties = options.map { option ->
             converter.convert(option.value).let { value -> "val ${option.key} = $value" }
         }
         
