@@ -4,10 +4,14 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
-import org.gradle.internal.impldep.org.apache.http.client.methods.RequestBuilder.options
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
+import org.gradle.plugins.ide.idea.model.IdeaModel
+import org.jetbrains.gradle.ext.IdeaExtPlugin
+import org.jetbrains.gradle.ext.settings
+import org.jetbrains.gradle.ext.taskTriggers
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -35,12 +39,15 @@ class BuildMark : Plugin<Project>
             dependsOn(generateTask)
         }
 
-        project.afterEvaluate {
-            generateTask.get().generate()
-        }
+        project.plugins.apply(IdeaExtPlugin::class.java)
+        
+        project.extensions.getByType<IdeaModel>().project.settings.taskTriggers.afterSync(generateTask)
     }
 
-    private fun configureExtensionConventions(extension: BuildMarkExtension, project: Project)
+    private fun configureExtensionConventions(
+        extension: BuildMarkExtension, 
+        project: Project
+    )
     {
         extension.targetPackage.convention("")
         extension.targetObjectName.convention("BuildMark")

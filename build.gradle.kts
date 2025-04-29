@@ -24,12 +24,14 @@ gradlePlugin {
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
     implementation(libs.kotlinpoet)
     compileOnly(libs.kotlin.gradle.plugin)
-    
+    implementation(libs.gradle.idea.ext.plugin)
+
     testImplementation(kotlin("test"))
     testImplementation(libs.kotlin.scripting.common)
     testImplementation(libs.kotlin.scripting.jvm)
