@@ -12,7 +12,7 @@ gradlePlugin {
     vcsUrl = "https://github.com/tomhula/build-mark.git"
     plugins {
         create("buildMark") {
-            id = "cz.tomashula.buildmark"
+            id = "io.github.tomhula.buildmark"
             displayName = "BuildMark"
             description = "Gradle plugin for embedding build information (like project name, version,...) into the code so it can be read at runtime."
             tags = listOf("build", "version", "project", "kotlin")
