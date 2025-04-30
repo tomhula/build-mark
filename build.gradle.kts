@@ -4,7 +4,7 @@ plugins {
     id("com.gradle.plugin-publish") version "1.3.1"
 }
 
-group = "cz.tomashula"
+group = "io.github.tomhula"
 version = "1.0.2"
 
 gradlePlugin {
@@ -16,7 +16,7 @@ gradlePlugin {
             displayName = "BuildMark"
             description = "Gradle plugin for embedding build information (like project name, version,...) into the code so it can be read at runtime."
             tags = listOf("build", "version", "project", "kotlin")
-            implementationClass = "cz.tomashula.buildmark.BuildMark"
+            implementationClass = "io.github.tomhula.buildmark.BuildMark"
         }
     }
 }

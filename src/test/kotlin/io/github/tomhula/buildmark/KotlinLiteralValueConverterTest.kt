@@ -1,6 +1,7 @@
-package cz.tomashula.buildmark
+package io.github.tomhula.buildmark
 
 import com.squareup.kotlinpoet.CodeBlock
+import io.github.tomhula.buildmark.KotlinLiteralValueConverter
 import org.junit.jupiter.api.Test
 import java.nio.charset.Charset
 import kotlin.random.Random

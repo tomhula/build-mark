@@ -1,4 +1,4 @@
-package cz.tomashula.buildmark
+package io.github.tomhula.buildmark
 
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty

@@ -1,4 +1,4 @@
-package cz.tomashula.buildmark
+package io.github.tomhula.buildmark
 
 import com.squareup.kotlinpoet.CodeBlock
 import kotlin.collections.joinToString

@@ -1,14 +1,12 @@
-package cz.tomashula.buildmark
+package io.github.tomhula.buildmark
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
-import org.gradle.internal.impldep.org.apache.http.client.methods.RequestBuilder.options
 
 internal abstract class GenerateBuildMarkTask : DefaultTask()
 {

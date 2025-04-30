@@ -1,4 +1,4 @@
-package cz.tomashula.buildmark
+package io.github.tomhula.buildmark
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
