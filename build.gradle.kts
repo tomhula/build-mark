@@ -8,8 +8,8 @@ group = "cz.tomashula"
 version = "1.0.2"
 
 gradlePlugin {
-    website = "https://github.com/tomhula/build-mark"
-    vcsUrl = "https://github.com/tomhula/build-mark.git"
+    website = "https://github.com/tomhula/buildmark"
+    vcsUrl = "https://github.com/tomhula/buildmark.git"
     plugins {
         create("buildMark") {
             id = "io.github.tomhula.buildmark"

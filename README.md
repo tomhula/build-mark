@@ -1,8 +1,8 @@
 # BuildMark Gradle Plugin
-![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/cz.tomashula.buildmark)
-![GitHub License](https://img.shields.io/github/license/tomhula/build-mark)
-![GitHub branch check runs](https://img.shields.io/github/check-runs/tomhula/build-mark/main)
-![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/tomhula/build-mark)
+![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/io.github.tomhula.buildmark)
+![GitHub License](https://img.shields.io/github/license/tomhula/buildmark)
+![GitHub branch check runs](https://img.shields.io/github/check-runs/tomhula/buildmark/main)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/tomhula/buildmark)
 
 A Gradle plugin that generates a Kotlin object with build information at compile time. This allows you to access build-time properties in your application at runtime.
 
@@ -11,7 +11,7 @@ A Gradle plugin that generates a Kotlin object with build information at compile
 Add the plugin to your build script: ![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/cz.tomashula.buildmark?label=version)
 ```kotlin
 plugins {
-    id("cz.tomashula.buildmark") version "<VERSION>"
+    id("io.github.tomhula.buildmark") version "<VERSION>"
 }
 
 buildMark {
