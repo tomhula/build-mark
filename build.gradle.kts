@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.tomhula"
-version = "1.0.2"
+version = "1.0.3"
 
 gradlePlugin {
     website = "https://github.com/tomhula/buildmark"
